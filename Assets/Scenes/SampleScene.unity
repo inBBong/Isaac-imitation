@@ -363,7 +363,7 @@ GameObject:
   - component: {fileID: 1151762653}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2799,7 +2799,7 @@ GameObject:
   - component: {fileID: 1967697051}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2893,6 +2893,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 5
   bodyRenderer: {fileID: 1085188645}
+  tearPrefab: {fileID: 8971902552656662378, guid: c39c09890928ec94e82bbfa03e44cae9, type: 3}
 --- !u!50 &1967697049
 Rigidbody2D:
   serializedVersion: 5

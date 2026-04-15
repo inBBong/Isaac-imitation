@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Wall
+  - Tears
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -49,6 +52,9 @@ TagManager:
     locked: 0
   - name: item
     uniqueID: 554435821
+    locked: 0
+  - name: effect
+    uniqueID: 3745832281
     locked: 0
   m_RenderingLayers:
   - Default
