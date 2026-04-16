@@ -11,15 +11,24 @@ enum Direction
 public class PlayerController : MonoBehaviour
 {
 
-    public float speed = 3;
+    [Header("Components")]
     public SpriteRenderer bodyRenderer;
+    public Animator bodyAnimator;
+    public Animator headAnimator;
+
+    [Header("Setting")]
+    public float speed = 3;
+    public float headFollowDelay = 0.3f; // 머리가 따라오는 지연시간
+    public float shootCooldown = 0.3f;
     public GameObject tearPrefab;
 
     Vector3 move;
     Direction bodydir;
     Direction headdir;
-    
 
+    float headFollowTimer = 0f;
+    float shootTimer = 0f;
+    bool isAttacking=false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,113 +39,110 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        HandleMove();
+        HandleAttackDirection();
+        HandleHeadFollow();      // 머리 지연 추적
+        HandleShootTimer();      // 공격 쿨타임
+    }
+    void HandleMove()
+    {
         move = Vector3.zero;
-        if (Input.GetKey(KeyCode.A))
-        {
-            move += new Vector3(-1, 0, 0);
-            bodydir = Direction.LEFT;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            move += new Vector3(1, 0, 0);
-            bodydir = Direction.RIGHT;
-        }
-        if (Input.GetKey(KeyCode.W))
-        {
-            move += new Vector3(0, 1, 0);
-            bodydir = Direction.UP;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            move += new Vector3(0, -1, 0);
-            bodydir = Direction.DOWN;
-        }
-
+        if (Input.GetKey(KeyCode.A)) { move.x -= 1; bodydir = Direction.LEFT; }
+        if (Input.GetKey(KeyCode.D)) { move.x += 1; bodydir = Direction.RIGHT; }
+        if (Input.GetKey(KeyCode.W)) { move.y += 1; bodydir = Direction.UP; }
+        if (Input.GetKey(KeyCode.S)) { move.y -= 1; bodydir = Direction.DOWN; }
         move = move.normalized;
-        
-        if (move.x < 0)
-        {
-            bodyRenderer.flipX = true;
-        }
-        if (move.x > 0)
-        {
-            bodyRenderer.flipX = false;
-        }
 
         bool isMoving = move.magnitude > 0;
-        if (isMoving)
-        {                    
-            if (bodydir == Direction.RIGHT|| bodydir==Direction.LEFT)
-            {
-                GetComponent<Animator>().SetTrigger("MoveRight");
-            }
-            if (bodydir == Direction.UP|| bodydir == Direction.DOWN)
-            {
-                GetComponent<Animator>().SetTrigger("MoveFront");
+        bodyAnimator.SetBool("IsMoving", isMoving);
 
-            }
-                
+        // 좌우 판단
+        if (bodydir == Direction.LEFT || bodydir == Direction.RIGHT)
+        {
+            bodyAnimator.SetInteger("DirX", 1);
+            bodyRenderer.flipX = (bodydir == Direction.LEFT);
+            bodyRenderer.flipY = false;
         }
         else
         {
-            
-            if (bodydir == Direction.RIGHT || bodydir == Direction.LEFT)
+            bodyAnimator.SetInteger("DirX", 0);
+            bodyRenderer.flipX = false;
+            bodyRenderer.flipY = (bodydir == Direction.UP); // 뒤는 정면 flipY
+        }
+
+        // 이동 시 머리 추적 타이머 리셋
+        if (isMoving) headFollowTimer = headFollowDelay;
+    }
+    void HandleAttackDirection()
+    {
+        bool attackInput = false;
+        // 방향키로 즉시 머리 방향 전환
+        if (Input.GetKey(KeyCode.UpArrow)) {SetHeadDirection(Direction.UP); attackInput = true; }
+        if (Input.GetKey(KeyCode.DownArrow)) {SetHeadDirection(Direction.DOWN); attackInput = true; }
+        if (Input.GetKey(KeyCode.LeftArrow)) {SetHeadDirection(Direction.LEFT); attackInput = true; }
+        if (Input.GetKey(KeyCode.RightArrow)) {SetHeadDirection(Direction.RIGHT); attackInput = true; }
+
+        if (attackInput)
+        {
+            isAttacking = true;
+            headFollowTimer = headFollowDelay; // 공격 중엔 머리 추적 타이머 리셋
+
+            // 쿨다운마다 발사
+            if (shootTimer <= 0f)
             {
-                GetComponent<Animator>().SetTrigger("StopRight");
-
+                Shoot();
+                shootTimer = shootCooldown;
             }
-            if (bodydir == Direction.UP || bodydir == Direction.DOWN)
+        }
+    }
+    void HandleShootTimer()
+    {
+        if (shootTimer > 0f) shootTimer -= Time.deltaTime;
+    }
+    void SetHeadDirection(Direction dir)
+    {
+        headdir = dir;
+        switch (dir)
+        {
+            case Direction.DOWN: headAnimator.SetInteger("HeadDir", 0); break;
+            case Direction.UP: headAnimator.SetInteger("HeadDir", 1); break;
+            case Direction.LEFT: headAnimator.SetInteger("HeadDir", 2); break;
+            case Direction.RIGHT: headAnimator.SetInteger("HeadDir", 3); break;
+        }
+    }
+    void HandleHeadFollow()
+    {
+        if (isAttacking)
+        {
+            // 방향키 안 누르는 순간 isAttacking 해제
+            if (!Input.GetKey(KeyCode.UpArrow) &&
+                !Input.GetKey(KeyCode.DownArrow) &&
+                !Input.GetKey(KeyCode.LeftArrow) &&
+                !Input.GetKey(KeyCode.RightArrow))
             {
-                GetComponent<Animator>().SetTrigger("StopFront");
-
+                isAttacking = false;
             }
+            return; // 공격 중엔 머리 추적 안 함
         }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
+        // 공격 중이 아닐 때만 몸통 방향 추적
+        headFollowTimer -= Time.deltaTime;
+        if (headFollowTimer <= 0f)
         {
-            headdir=Direction.LEFT;
-            Shoot();
+            SetHeadDirection(bodydir);// 지연 후 머리가 몸통 방향 따라감
         }
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            headdir = Direction.RIGHT;
-            Shoot();
-        }
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            headdir = Direction.UP;
-            Shoot();
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            headdir = Direction.DOWN;
-            Shoot();
-        }
-
-
-
+                             
     }
     void Shoot()
     {
-        GameObject newTear = Instantiate<GameObject>(tearPrefab);
-        newTear.transform.position=transform.position+new Vector3(0,0.4f,0);
-        if (headdir == Direction.LEFT)
+        GameObject newTear = GetComponent<ObjectPool>().Get();
+        if (newTear != null)
         {
-            newTear.GetComponent<Tears>().Direction = new Vector2(-1, 0);
+            newTear.transform.position = transform.position + new Vector3(0, 0.4f, 0);
+            if (headdir == Direction.LEFT) newTear.GetComponent<Tears>().Direction = new Vector2(-1, 0);
+            else if (headdir == Direction.RIGHT) newTear.GetComponent<Tears>().Direction = new Vector2(1, 0);
+            else if (headdir == Direction.UP) newTear.GetComponent<Tears>().Direction = new Vector2(0, 1);
+            else if (headdir == Direction.DOWN) newTear.GetComponent<Tears>().Direction = new Vector2(0, -1);
         }
-        if (headdir == Direction.RIGHT)
-        {
-            newTear.GetComponent<Tears>().Direction = new Vector2(1, 0);
-        }
-        if (headdir == Direction.UP)
-        {
-            newTear.GetComponent<Tears>().Direction = new Vector2(0, 1);
-        }
-        if (headdir == Direction.DOWN)
-        {
-            newTear.GetComponent<Tears>().Direction = new Vector2(0, -1);
-        }
-
     }
 
     private void FixedUpdate()
