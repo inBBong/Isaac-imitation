@@ -119,6 +119,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &366952637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 366952638}
+  m_Layer: 0
+  m_Name: Tears
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &366952638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366952637}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2797,6 +2828,7 @@ GameObject:
   - component: {fileID: 1967697050}
   - component: {fileID: 1967697049}
   - component: {fileID: 1967697051}
+  - component: {fileID: 1967697052}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2891,8 +2923,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 656dc81f5ffaa294a96379f4ac42185d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  speed: 5
   bodyRenderer: {fileID: 1085188645}
+  bodyAnimator: {fileID: 0}
+  headAnimator: {fileID: 0}
+  speed: 5
+  headFollowDelay: 0.3
+  shootCooldown: 0.3
   tearPrefab: {fileID: 8971902552656662378, guid: c39c09890928ec94e82bbfa03e44cae9, type: 3}
 --- !u!50 &1967697049
 Rigidbody2D:
@@ -2965,7 +3001,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1967697045}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: df8617570eb55c74cad14bc5f6da25b6, type: 2}
   m_CullingMode: 0
@@ -2979,6 +3015,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1967697052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967697045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d957eadbbe53844e85f4ce42c8145d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectPool
+  prefab: {fileID: 8971902552656662378, guid: c39c09890928ec94e82bbfa03e44cae9, type: 3}
+  parent: {fileID: 366952638}
+  maxObject: 30
 --- !u!1 &2115249076
 GameObject:
   m_ObjectHideFlags: 0
@@ -3078,3 +3129,4 @@ SceneRoots:
   - {fileID: 1493749812}
   - {fileID: 1832054870}
   - {fileID: 1967697047}
+  - {fileID: 366952638}
