@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     float headFollowTimer = 0f;
     float shootTimer = 0f;
     bool isAttacking=false;
-
+    bool isMoving = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.S)) { move.y -= 1; bodydir = Direction.DOWN; }
         move = move.normalized;
 
-        bool isMoving = move.magnitude > 0;
+        isMoving = move.magnitude > 0;
         bodyAnimator.SetBool("IsMoving", isMoving);
 
         // 좌우 판단
@@ -61,17 +61,15 @@ public class PlayerController : MonoBehaviour
         {
             bodyAnimator.SetInteger("DirX", 1);
             bodyRenderer.flipX = (bodydir == Direction.LEFT);
-            bodyRenderer.flipY = false;
         }
         else
         {
             bodyAnimator.SetInteger("DirX", 0);
             bodyRenderer.flipX = false;
-            bodyRenderer.flipY = (bodydir == Direction.UP); // 뒤는 정면 flipY
         }
-
+        bodyRenderer.flipY = false;
         // 이동 시 머리 추적 타이머 리셋
-        if (isMoving) headFollowTimer = headFollowDelay;
+        //if (isMoving) headFollowTimer = headFollowDelay;
     }
     void HandleAttackDirection()
     {
@@ -104,10 +102,10 @@ public class PlayerController : MonoBehaviour
         headdir = dir;
         switch (dir)
         {
-            case Direction.DOWN: headAnimator.SetInteger("HeadDir", 0); break;
-            case Direction.UP: headAnimator.SetInteger("HeadDir", 1); break;
-            case Direction.LEFT: headAnimator.SetInteger("HeadDir", 2); break;
-            case Direction.RIGHT: headAnimator.SetInteger("HeadDir", 3); break;
+            case Direction.DOWN: headAnimator.SetInteger("Headdir", 0); break;
+            case Direction.UP: headAnimator.SetInteger("Headdir", 1); break;
+            case Direction.LEFT: headAnimator.SetInteger("Headdir", 2); break;
+            case Direction.RIGHT: headAnimator.SetInteger("Headdir", 3); break;
         }
     }
     void HandleHeadFollow()
@@ -124,11 +122,13 @@ public class PlayerController : MonoBehaviour
             }
             return; // 공격 중엔 머리 추적 안 함
         }
-        // 공격 중이 아닐 때만 몸통 방향 추적
+        if(isMoving)
+        {// 공격 중이 아닐 때, 움직일때만 몸통 방향 추적
         headFollowTimer -= Time.deltaTime;
-        if (headFollowTimer <= 0f)
-        {
-            SetHeadDirection(bodydir);// 지연 후 머리가 몸통 방향 따라감
+            if (headFollowTimer <= 0f)
+            {
+                SetHeadDirection(bodydir);// 지연 후 머리가 몸통 방향 따라감
+            }
         }
                              
     }
