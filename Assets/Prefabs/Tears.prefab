@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 150389782611440307}
   - component: {fileID: 5328594839995543243}
   - component: {fileID: 7897699808137384331}
+  - component: {fileID: 4553652033685999698}
   m_Layer: 0
   m_Name: Tears
   m_TagString: Tears
@@ -30,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.23, y: -0.83, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,8 +85,8 @@ SpriteRenderer:
   m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.3996653, g: 0.7710751, b: 0.9169811, a: 1}
+  m_Sprite: {fileID: 2291230457559346944, guid: 764a5caed09cf9342bfdb288e7128764, type: 3}
+  m_Color: {r: 0.9493841, g: 0.98038054, b: 0.9924528, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -128,8 +129,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0, y: 0.000000044703484}
+  m_Radius: 0.08511694
 --- !u!50 &5328594839995543243
 Rigidbody2D:
   serializedVersion: 5
@@ -169,5 +170,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6fd4c7eab0292a4c8ad2028e65097f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tears
+  TearAnimator: {fileID: 4553652033685999698}
   speed: 10
   damage: 1
+--- !u!95 &4553652033685999698
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8971902552656662378}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 36882c6c5f2996944920eabae495d876, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

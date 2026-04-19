@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d1d8a79696ecc8243827c348440f6b5a
+guid: 678f5bedbee2c504689ef8c503e273e3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5686486594252367733
-    second: testesset_0
+      213: -7432528441326871052
+    second: Roid Rage_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,12 +100,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: testesset_0
+      name: Roid Rage_0
       rect:
         serializedVersion: 2
-        x: 23
-        y: 25
-        width: 132
+        x: 25
+        y: 15
+        width: 42
         height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b881191229a8511b0800000000000000
-      internalID: -5686486594252367733
+      spriteID: 4fd59b703ca5ad890800000000000000
+      internalID: -7432528441326871052
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      testesset_0: -5686486594252367733
+      Roid Rage_0: -7432528441326871052
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

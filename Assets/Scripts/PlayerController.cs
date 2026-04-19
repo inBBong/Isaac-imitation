@@ -137,7 +137,8 @@ public class PlayerController : MonoBehaviour
         GameObject newTear = GetComponent<ObjectPool>().Get();
         if (newTear != null)
         {
-            newTear.transform.position = transform.position + new Vector3(0, 0.4f, 0);
+            newTear.transform.position = transform.position + new Vector3(0, 0.4f, 0);            
+            
             if (headdir == Direction.LEFT) newTear.GetComponent<Tears>().Direction = new Vector2(-1, 0);
             else if (headdir == Direction.RIGHT) newTear.GetComponent<Tears>().Direction = new Vector2(1, 0);
             else if (headdir == Direction.UP) newTear.GetComponent<Tears>().Direction = new Vector2(0, 1);
