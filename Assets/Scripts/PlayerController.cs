@@ -13,14 +13,25 @@ public class PlayerController : MonoBehaviour
 
     [Header("Components")]
     public SpriteRenderer bodyRenderer;
+    public SpriteRenderer headRenderer;
+    public SpriteRenderer playerRenderer;
     public Animator bodyAnimator;
     public Animator headAnimator;
+    public Animator playerAnimator;
 
     [Header("Setting")]
     public float speed = 3;
+    public float MaxHp = 3;
     public float headFollowDelay = 0.3f; // 머리가 따라오는 지연시간
     public float shootCooldown = 0.3f;
+    public float hitCooldown = 1.5f;
     public GameObject tearPrefab;
+
+    bool isDead = false;
+    bool isInvincible = false;
+
+    float HitTime = 1.0f;
+    float DeadTime = 2.0f;
 
     Vector3 move;
     Direction bodydir;
@@ -30,19 +41,29 @@ public class PlayerController : MonoBehaviour
     float shootTimer = 0f;
     bool isAttacking=false;
     bool isMoving = false;
+    float hp;
+    MonsterSpawner spawner;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        hp = MaxHp;
+        spawner = FindAnyObjectByType<MonsterSpawner>();
+        spawner.Spawn("Fly"); // 테스트용
+        spawner.Spawn("Fly"); // 테스트용
+        spawner.Spawn("Fly"); // 테스트용
+        spawner.Spawn("Fly"); // 테스트용
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandleMove();
-        HandleAttackDirection();
-        HandleHeadFollow();      // 머리 지연 추적
-        HandleShootTimer();      // 공격 쿨타임
+        if (!isDead)
+        {
+            HandleMove();
+            HandleAttackDirection();
+            HandleHeadFollow();      // 머리 지연 추적
+            HandleShootTimer();      // 공격 쿨타임
+        }
     }
     void HandleMove()
     {
@@ -149,5 +170,99 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         transform.Translate(move * speed * Time.fixedDeltaTime);
+    }
+    public void TakeDamage(float damage)
+    {
+        if (isDead || isInvincible) return;  // 무적/사망 중엔 피격 무시
+
+        hp -= damage;
+
+        if (hp <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            StartCoroutine(HitRoutine());
+        }
+    }
+    IEnumerator HitRoutine()
+    {
+        isInvincible = true;
+
+        // 피격 애니메이션 재생
+        bodyRenderer.enabled = false;
+        headRenderer.enabled = false;
+        playerRenderer.enabled = true;
+
+        bodyAnimator.enabled = false;   // Body 애니메이터 끄기
+        headAnimator.enabled = false;   // Head 애니메이터 끄기
+        playerAnimator.SetTrigger("IsHit");
+
+        // 깜빡임 효과
+        StartCoroutine(BlinkRoutine());
+
+        // 피격 애니메이션이 끝날 때까지 대기
+        yield return new WaitForSeconds(HitTime); // 피격 애니메이션 길이에 맞게 조정
+
+
+        // 피격 애니메이션 끝 - 복구
+        bodyRenderer.enabled = true;
+        headRenderer.enabled = true;
+        playerRenderer.enabled = false;
+        bodyAnimator.enabled = true;
+        headAnimator.enabled = true;
+
+        yield return new WaitForSeconds(hitCooldown- HitTime);
+        isInvincible = false;
+    }
+    IEnumerator BlinkRoutine()
+    {
+        float blinkDuration = hitCooldown;
+        float blinkInterval = 0.1f;
+        float timer = 0f;
+
+        while (timer < blinkDuration)
+        {
+            if (timer < HitTime)// 피격애니메이션이 실행되는동안 Player 렌더러를 번갈아 끄고 켜기
+                playerRenderer.enabled = !playerRenderer.enabled;
+            else
+            {   // Body, Head 렌더러를 번갈아 끄고 켜기
+                playerRenderer.enabled = false;
+                bodyRenderer.enabled = !bodyRenderer.enabled;
+                headRenderer.enabled = !headRenderer.enabled;
+            }
+
+            yield return new WaitForSeconds(blinkInterval);
+            timer += blinkInterval;
+        }
+
+        bodyRenderer.enabled = true;  // 깜빡임 끝나면 반드시 켜기
+        headRenderer.enabled = true;  // 깜빡임 끝나면 반드시 켜기
+    }
+    void Die()
+    {
+        isDead = true;
+        move = Vector3.zero;
+        bodyRenderer.enabled = false;
+        headRenderer.enabled = false;
+        playerRenderer.enabled = true;
+
+        bodyAnimator.enabled = false;   // Body 애니메이터 끄기
+        headAnimator.enabled = false;   // Head 애니메이터 끄기
+        playerAnimator.SetTrigger("IsDead");
+
+        // 사망 애니메이션 길이에 맞게 조정
+        StartCoroutine(DieRoutine());
+    }
+    IEnumerator DieRoutine()
+    {
+        yield return new WaitForSeconds(DeadTime); // 사망 애니메이션 길이
+        // 나중에 게임오버 화면 전환 추가
+        gameObject.SetActive(false);
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
     }
 }

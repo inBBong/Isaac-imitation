@@ -57,6 +57,12 @@ TagManager:
   - name: effect
     uniqueID: 3745832281
     locked: 0
+  - name: Monsters
+    uniqueID: 2972853595
+    locked: 0
+  - name: Object
+    uniqueID: 3467893455
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []
