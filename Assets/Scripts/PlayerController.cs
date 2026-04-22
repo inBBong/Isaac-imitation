@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     Vector3 move;
     Direction bodydir;
     Direction headdir;
-
+        
     float headFollowTimer = 0f;
     float shootTimer = 0f;
     bool isAttacking=false;
@@ -96,10 +96,10 @@ public class PlayerController : MonoBehaviour
     {
         bool attackInput = false;
         // 방향키로 즉시 머리 방향 전환
-        if (Input.GetKey(KeyCode.UpArrow)) {SetHeadDirection(Direction.UP); attackInput = true; }
-        if (Input.GetKey(KeyCode.DownArrow)) {SetHeadDirection(Direction.DOWN); attackInput = true; }
-        if (Input.GetKey(KeyCode.LeftArrow)) {SetHeadDirection(Direction.LEFT); attackInput = true; }
-        if (Input.GetKey(KeyCode.RightArrow)) {SetHeadDirection(Direction.RIGHT); attackInput = true; }
+        if (Input.GetKey(KeyCode.UpArrow)) {SetHeadDirection(Direction.UP); attackInput = true; headAnimator.SetBool("Shoot",true); }
+        if (Input.GetKey(KeyCode.DownArrow)) {SetHeadDirection(Direction.DOWN); attackInput = true; headAnimator.SetBool("Shoot", true); }
+        if (Input.GetKey(KeyCode.LeftArrow)) {SetHeadDirection(Direction.LEFT); attackInput = true; headAnimator.SetBool("Shoot", true); }
+        if (Input.GetKey(KeyCode.RightArrow)) {SetHeadDirection(Direction.RIGHT); attackInput = true; headAnimator.SetBool("Shoot", true); }
 
         if (attackInput)
         {
@@ -155,6 +155,7 @@ public class PlayerController : MonoBehaviour
     }
     void Shoot()
     {
+
         GameObject newTear = GetComponent<ObjectPool>().Get();
         if (newTear != null)
         {
@@ -247,7 +248,7 @@ public class PlayerController : MonoBehaviour
         bodyRenderer.enabled = false;
         headRenderer.enabled = false;
         playerRenderer.enabled = true;
-
+        GetComponent<Collider2D>().enabled = false; // 충돌 끄기
         bodyAnimator.enabled = false;   // Body 애니메이터 끄기
         headAnimator.enabled = false;   // Head 애니메이터 끄기
         playerAnimator.SetTrigger("IsDead");

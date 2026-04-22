@@ -7,6 +7,7 @@ public abstract class Monster : MonoBehaviour
     float hp;
     public float speed;
     public float damage;
+    public float conflictDamage=1.0f;
 
     // 자신을 꺼낸 풀 참조
     [HideInInspector] public ObjectPool myPool;
@@ -53,7 +54,7 @@ public abstract class Monster : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<PlayerController>().TakeDamage(damage);
+            other.GetComponent<PlayerController>().TakeDamage(conflictDamage);//충돌 데미지
         }
     }
 
